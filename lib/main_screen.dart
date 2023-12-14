@@ -9,13 +9,13 @@ import 'package:test1/sub_screen/disaster_screen.dart';
 import 'package:test1/sub_screen/menual_screen.dart';
 import 'package:test1/sub_screen/setting_screen.dart';
 
-class GoogleMapPage extends StatefulWidget {
-  const GoogleMapPage({Key? key}) : super(key: key);
+class MainScreen extends StatefulWidget {
+  const MainScreen({Key? key}) : super(key: key);
   @override
-  _GoogleMapPageState createState() => _GoogleMapPageState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _GoogleMapPageState extends State<GoogleMapPage> {
+class _MainScreenState extends State<MainScreen> {
   Completer<GoogleMapController> _controller = Completer();
   LocationPermission? _locationPermission;
   StreamSubscription<Position>? _positionStreamSubscription;
@@ -89,9 +89,6 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     );
   }
 
-
-
-
   Widget _buildGoogleMap() {
     return _isLocationReady
         ? GoogleMap(
@@ -120,7 +117,6 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     )
         : Center(child: CircularProgressIndicator());
   }
-
 
   Widget _buildLocationButtons() {
     return Positioned(
@@ -207,14 +203,12 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     );
   }
 
-
   void _navigateToScreen(Widget screen) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => screen),
     );
   }
-
 
   void _moveToCurrentLocation() {
     if (_controller.isCompleted) {
