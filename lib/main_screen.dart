@@ -39,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
       return;
     }
     _positionStreamSubscription = Geolocator.getPositionStream().listen(
-          (Position position) {
+      (Position position) {
         setState(() {
           _currentPosition = position;
           _isLocationReady = true;
@@ -57,10 +57,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     // 상태바의 높이 확인
-    var statusBarHeight = MediaQuery
-        .of(context)
-        .padding
-        .top;
+    var statusBarHeight = MediaQuery.of(context).padding.top;
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     return Scaffold(
@@ -82,8 +79,7 @@ class _MainScreenState extends State<MainScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "현재 좌표: ${_currentPosition?.latitude}, ${_currentPosition
-                  ?.longitude}",
+              "현재 좌표: ${_currentPosition?.latitude}, ${_currentPosition?.longitude}",
               style: TextStyle(fontSize: 16.0),
             ),
           ),
@@ -94,53 +90,50 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildHazardStick() {
     return Positioned(
-        top: 100,
-        left: 10,
-        child: HazardScreen(),
+      top: 100,
+      left: 10,
+      child: Column(
+        children: [
+          HazardScreen(),
+        ],
+      ),
     );
   }
-
 
   Widget _buildGoogleMap() {
     return _isLocationReady
         ? GoogleMap(
-      mapType: MapType.normal,
-      initialCameraPosition: CameraPosition(
-        target: LatLng(
-          _currentPosition!.latitude,
-          _currentPosition!.longitude,
-        ),
-        zoom: 15.0,
-      ),
-      onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-      },
-      myLocationEnabled: false,
-      markers: {
-        Marker(
-          markerId: MarkerId("current_position"),
-          position: LatLng(
-            _currentPosition!.latitude,
-            _currentPosition!.longitude,
-          ),
-          infoWindow: InfoWindow(title: "현재 위치"),
-        ),
-      },
-    )
+            mapType: MapType.normal,
+            initialCameraPosition: CameraPosition(
+              target: LatLng(
+                _currentPosition!.latitude,
+                _currentPosition!.longitude,
+              ),
+              zoom: 15.0,
+            ),
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            myLocationEnabled: false,
+            markers: {
+              Marker(
+                markerId: MarkerId("current_position"),
+                position: LatLng(
+                  _currentPosition!.latitude,
+                  _currentPosition!.longitude,
+                ),
+                infoWindow: InfoWindow(title: "현재 위치"),
+              ),
+            },
+          )
         : Center(child: CircularProgressIndicator());
   }
 
   Widget _buildLocationButtons() {
     return Positioned(
-      bottom: MediaQuery
-          .of(context)
-          .size
-          .height * 0.02,
+      bottom: MediaQuery.of(context).size.height * 0.02,
       child: Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
+        width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
             Row(
