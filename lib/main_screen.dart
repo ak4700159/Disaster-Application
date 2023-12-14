@@ -8,9 +8,11 @@ import 'package:test1/sub_screen/community_screen.dart';
 import 'package:test1/sub_screen/disaster_screen.dart';
 import 'package:test1/sub_screen/menual_screen.dart';
 import 'package:test1/sub_screen/setting_screen.dart';
+import 'package:test1/tools_and_data/hazard_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -22,13 +24,11 @@ class _MainScreenState extends State<MainScreen> {
   Position? _currentPosition;
   bool _isLocationReady = false;
 
-
   @override
   void initState() {
     super.initState();
     _checkLocationPermission();
   }
-
 
   void _checkLocationPermission() async {
     _locationPermission = await Geolocator.checkPermission();
@@ -48,18 +48,19 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-
   @override
   void dispose() {
     _positionStreamSubscription?.cancel();
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     // 상태바의 높이 확인
-    var statusBarHeight = MediaQuery.of(context).padding.top;
+    var statusBarHeight = MediaQuery
+        .of(context)
+        .padding
+        .top;
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     return Scaffold(
@@ -73,6 +74,7 @@ class _MainScreenState extends State<MainScreen> {
             child: Stack(
               children: [
                 _buildGoogleMap(),
+                _buildHazardStick(),
                 _buildLocationButtons(),
               ],
             ),
@@ -80,7 +82,8 @@ class _MainScreenState extends State<MainScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "현재 좌표: ${_currentPosition?.latitude}, ${_currentPosition?.longitude}",
+              "현재 좌표: ${_currentPosition?.latitude}, ${_currentPosition
+                  ?.longitude}",
               style: TextStyle(fontSize: 16.0),
             ),
           ),
@@ -88,6 +91,15 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+
+  Widget _buildHazardStick() {
+    return Positioned(
+        top: 100,
+        left: 10,
+        child: HazardScreen(),
+    );
+  }
+
 
   Widget _buildGoogleMap() {
     return _isLocationReady
@@ -120,9 +132,15 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildLocationButtons() {
     return Positioned(
-      bottom: MediaQuery.of(context).size.height * 0.02,
+      bottom: MediaQuery
+          .of(context)
+          .size
+          .height * 0.02,
       child: Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
         child: Column(
           children: [
             Row(
@@ -136,12 +154,18 @@ class _MainScreenState extends State<MainScreen> {
                     backgroundColor: Colors.transparent,
                     elevation: 0,
                     shape: const BeveledRectangleBorder(),
-                    child: const Icon(Icons.my_location, size: 30, color: Colors.red,),
+                    child: const Icon(
+                      Icons.my_location,
+                      size: 30,
+                      color: Colors.red,
+                    ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 40,),
+            SizedBox(
+              height: 40,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,7 +179,11 @@ class _MainScreenState extends State<MainScreen> {
                     elevation: 0,
                     heroTag: 'but1',
                     onPressed: () => _navigateToScreen(Screen1()),
-                    child: const Icon(Icons.account_balance, size: 40, color: Colors.black,),
+                    child: const Icon(
+                      Icons.account_balance,
+                      size: 40,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
                 Container(
@@ -167,7 +195,11 @@ class _MainScreenState extends State<MainScreen> {
                     elevation: 0,
                     heroTag: 'but2',
                     onPressed: () => _navigateToScreen(Screen2()),
-                    child: const Icon(Icons.accessibility, size: 40, color: Colors.black,),
+                    child: const Icon(
+                      Icons.accessibility,
+                      size: 40,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
                 Container(
@@ -179,7 +211,11 @@ class _MainScreenState extends State<MainScreen> {
                     elevation: 0,
                     heroTag: 'but3',
                     onPressed: () => _navigateToScreen(const SettingsScreen()),
-                    child: const Icon(Icons.settings, size: 40, color: Colors.black,),
+                    child: const Icon(
+                      Icons.settings,
+                      size: 40,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
                 Container(
@@ -191,10 +227,16 @@ class _MainScreenState extends State<MainScreen> {
                     elevation: 0,
                     heroTag: 'but4',
                     onPressed: () => _navigateToScreen(const DisasterScreen()),
-                    child: const Icon(Icons.access_alarm_outlined, size: 40, color: Colors.black,),
+                    child: const Icon(
+                      Icons.access_alarm_outlined,
+                      size: 40,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-                SizedBox(width: 25,),
+                SizedBox(
+                  width: 25,
+                ),
               ],
             ),
           ],
