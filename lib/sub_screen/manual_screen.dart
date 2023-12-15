@@ -15,7 +15,6 @@ class _ManualScreenState extends State<ManualScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('대응 메뉴얼'),
@@ -37,12 +36,9 @@ class _ManualScreenState extends State<ManualScreen> {
                             padding: EdgeInsets.all(10.0),
                             child: TextField(
                               decoration: InputDecoration(
-                                  labelText: '검색',
-                                  border: OutlineInputBorder()),
-                              onChanged: (context) {
-                                search = context.toString();
-                                setState(() {});
-                              },
+                                labelText: '검색',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
                           ),
                         ],
