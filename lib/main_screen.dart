@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test1/sub_screen/community_screen.dart';
 import 'package:test1/sub_screen/disaster_screen.dart';
-import 'package:test1/sub_screen/menual_screen.dart';
+import 'package:test1/sub_screen/manual_screen.dart';
 import 'package:test1/sub_screen/setting_screen.dart';
 import 'package:test1/tools_and_data/hazard_screen.dart';
 
@@ -80,7 +80,7 @@ class _MainScreenState extends State<MainScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               "현재 좌표: ${_currentPosition?.latitude}, ${_currentPosition?.longitude}",
-              style: TextStyle(fontSize: 16.0),
+              style: const TextStyle(fontSize: 16.0),
             ),
           ),
         ],
@@ -89,7 +89,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildHazardStick() {
-    return Positioned(
+    return const Positioned(
       top: 100,
       left: 10,
       child: Column(
@@ -117,16 +117,16 @@ class _MainScreenState extends State<MainScreen> {
             myLocationEnabled: false,
             markers: {
               Marker(
-                markerId: MarkerId("current_position"),
+                markerId: const MarkerId("current_position"),
                 position: LatLng(
                   _currentPosition!.latitude,
                   _currentPosition!.longitude,
                 ),
-                infoWindow: InfoWindow(title: "현재 위치"),
+                infoWindow: const InfoWindow(title: "현재 위치"),
               ),
             },
           )
-        : Center(child: CircularProgressIndicator());
+        : const Center(child: CircularProgressIndicator());
   }
 
   Widget _buildLocationButtons() {
@@ -187,7 +187,7 @@ class _MainScreenState extends State<MainScreen> {
                     shape: const BeveledRectangleBorder(),
                     elevation: 0,
                     heroTag: 'but2',
-                    onPressed: () => _navigateToScreen(Screen2()),
+                    onPressed: () => _navigateToScreen(ManualScreen()),
                     child: const Icon(
                       Icons.accessibility,
                       size: 40,

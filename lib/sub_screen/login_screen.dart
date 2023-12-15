@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test1/main_screen.dart';
-import 'package:test1/sub_screen/menual_screen.dart';
+import 'package:test1/sub_screen/manual_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     elevation: 0,
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Screen2()));
+                          MaterialPageRoute(builder: (context) => ManualScreen()));
                     },
                     child: const Icon(
                       Icons.accessibility,
