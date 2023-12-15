@@ -15,7 +15,6 @@ class _ManualScreenState extends State<ManualScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String? search;
 
     return Scaffold(
       appBar: AppBar(
