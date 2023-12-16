@@ -45,6 +45,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Positioned(
       top: 10,

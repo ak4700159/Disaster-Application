@@ -14,7 +14,12 @@ class _HazardScreenState extends State<HazardScreen> {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: Size(150, 50),
+      size: Size(100, 100),
+      child: Container(
+        width: 100,
+        height: 100,
+        color: Colors.black,
+      ),
       painter: HazardGraph(hazardRate: hazardRate),
     );
   }

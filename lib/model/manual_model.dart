@@ -26,11 +26,13 @@ class ManualTile extends StatelessWidget {
               content: Container(
                 width: 300,
                 height: 300,
-                child: Column(
-                  children: [
-                    Image.network(manual.image),
-                    Text(manual.description),
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Image.network(manual.image),
+                      Text(manual.description),
+                    ],
+                  ),
                 ),
               ),
             );
