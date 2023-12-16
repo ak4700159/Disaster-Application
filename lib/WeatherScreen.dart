@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -37,6 +38,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void initState() {
     super.initState();
     getWeatherData();
+
+    // 타이머 설정
+    const Duration updateInterval = const Duration(minutes: 5); //5분마다 업데이트
+    Timer.periodic(updateInterval, (Timer t) => getWeatherData());
   }
 
   @override
@@ -71,7 +76,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       });
     } catch (e) {
       print('Error: $e');
-      // Handle the error gracefully, e.g., show an error message to the user.
+
     }
   }
 
@@ -84,6 +89,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
         var wind = weatherResult['wind'];
         var sys = weatherResult['sys'];
 
+        double minTemperatureInKelvin = main['temp_min'];
+        double maxTemperatureInKelvin = main['temp_max'];
+
         return AlertDialog(
           title: Text('지역 : ${weatherResult['name']}'), //지역
           content: SingleChildScrollView(
@@ -92,8 +100,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
               children: [
                 Text('온도: ${temperatureInCelsius.toStringAsFixed(2)} °C'),
                 Text('날씨: ${weather['description']}'),
-                Text('최저 온도: ${main['temp_min']} °C'),
-                Text('최고 온도: ${main['temp_max']} °C'),
+                Text('최저 온도: ${(minTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
+                Text('최고 온도: ${(maxTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
                 Text('습도: ${main['humidity']}%'),
                 Text('기압: ${main['pressure']} hPa'),
                 Text('풍속: ${wind['speed']} m/s'),
@@ -114,5 +122,4 @@ class _WeatherScreenState extends State<WeatherScreen> {
       },
     );
   }
-
 }
