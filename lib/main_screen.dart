@@ -68,13 +68,13 @@ class _MainScreenState extends State<MainScreen> {
             height: statusBarHeight,
             color: Colors.transparent,
           ),
-          WeatherScreen(), // WeatherScreen을 맨 위로 이동
           Expanded(
             child: Stack(
               children: [
                 _buildGoogleMap(),
                 _buildHazardStick(),
                 _buildLocationButtons(),
+                WeatherScreen(), // WeatherScreen을 맨 위로 이동
               ],
             ),
           ),
@@ -133,6 +133,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildLocationButtons() {
     return Positioned(
+      left: 10, // 왼쪽 여백 추가
       bottom: MediaQuery.of(context).size.height * 0.02,
       child: Container(
         width: MediaQuery.of(context).size.width,
