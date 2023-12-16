@@ -22,8 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
               width: MediaQuery.sizeOf(context).width,
               height: MediaQuery.sizeOf(context).height * 0.3,
             ),
-            SizedBox(
-              height: 50,
+            Image.asset(
+              'assets/name.jpg',
+              width: MediaQuery.sizeOf(context).width,
+              height: MediaQuery.sizeOf(context).height * 0.15,
             ),
             Container(
               width: MediaQuery.of(context).size.width * 0.7,
@@ -60,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 17,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -83,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 17,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -107,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
             SizedBox(
-              height: 140,
+              height: 30,
             ),
             Row(
               children: [
@@ -119,8 +123,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     shape: const BeveledRectangleBorder(),
                     elevation: 0,
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => ManualScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ManualScreen()));
                     },
                     child: const Icon(
                       Icons.accessibility,

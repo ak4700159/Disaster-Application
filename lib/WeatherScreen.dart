@@ -91,22 +91,27 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
         double minTemperatureInKelvin = main['temp_min'];
         double maxTemperatureInKelvin = main['temp_max'];
+        double feelsLikeInKelvin = main['feels_like'];
+
+
 
         return AlertDialog(
-          title: Text('지역 : ${weatherResult['name']}'), //지역
+          title: Text('지역: ${weatherResult['name']}'), // 지역
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('온도: ${temperatureInCelsius.toStringAsFixed(2)} °C'),
+                Text('체감온도: ${(feelsLikeInKelvin - 273.15).toStringAsFixed(2)} °C'), // 체감온도 추가
                 Text('날씨: ${weather['description']}'),
                 Text('최저 온도: ${(minTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
                 Text('최고 온도: ${(maxTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
                 Text('습도: ${main['humidity']}%'),
                 Text('기압: ${main['pressure']} hPa'),
+                Text('풍향: ${wind['deg']}°'), // 풍향 정보 추가
                 Text('풍속: ${wind['speed']} m/s'),
-                //Text('City: ${weatherResult['name']}'),
-                //Text('Country: ${sys['country']}'),
+                Text('일출 시간: ${DateTime.fromMillisecondsSinceEpoch(sys['sunrise'] * 1000)}'),
+                Text('일몰 시간: ${DateTime.fromMillisecondsSinceEpoch(sys['sunset'] * 1000)}'),
               ],
             ),
           ),
@@ -122,4 +127,5 @@ class _WeatherScreenState extends State<WeatherScreen> {
       },
     );
   }
+
 }

@@ -91,7 +91,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildHazardStick() {
-    return const Positioned(
+    return Positioned(
       top: 100,
       left: 10,
       child: Column(
