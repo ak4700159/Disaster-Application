@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test1/sub_screen/community_screen.dart';
 import 'package:test1/sub_screen/disaster_screen.dart';
+import 'package:test1/sub_screen/login_screen.dart';
 import 'package:test1/sub_screen/manual_screen.dart';
 import 'package:test1/sub_screen/setting_screen.dart';
 import 'package:test1/tools_and_data/hazard_screen.dart';
@@ -41,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
       return;
     }
     _positionStreamSubscription = Geolocator.getPositionStream().listen(
-          (Position position) {
+      (Position position) {
         setState(() {
           _currentPosition = position;
           _isLocationReady = true;
@@ -59,33 +60,82 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     var statusBarHeight = MediaQuery.of(context).padding.top;
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
 
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            height: statusBarHeight,
-            color: Colors.transparent,
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                _buildGoogleMap(),
-                _buildHazardStick(),
-                _buildLocationButtons(),
-                WeatherScreen(), // WeatherScreen을 맨 위로 이동
-              ],
+      body: WillPopScope(
+        onWillPop: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext buildContext) {
+              return AlertDialog(
+                content: Container(
+                  width: 100,
+                  height: 100,
+                  child: const Center(
+                    child: Text(
+                      '나가시겠습니까?',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      );
+                    },
+                    child: const Text('로그인창'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('취소'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      SystemNavigator.pop();
+                    },
+                    child: Text('종료'),
+                  ),
+                ],
+              );
+            },
+          );
+          return Future(() => false);
+        },
+        child: Column(
+          children: [
+            Container(
+              height: statusBarHeight,
+              color: Colors.transparent,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "현재 좌표: ${_currentPosition?.latitude}, ${_currentPosition?.longitude}",
-              style: const TextStyle(fontSize: 16.0),
+            Expanded(
+              child: Stack(
+                children: [
+                  _buildGoogleMap(),
+                  _buildHazardStick(),
+                  _buildLocationButtons(),
+                  WeatherScreen(), // WeatherScreen을 맨 위로 이동
+                ],
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "현재 좌표: ${_currentPosition?.latitude}, ${_currentPosition?.longitude}",
+                style: const TextStyle(fontSize: 16.0),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -105,29 +155,29 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildGoogleMap() {
     return _isLocationReady
         ? GoogleMap(
-      mapType: MapType.normal,
-      initialCameraPosition: CameraPosition(
-        target: LatLng(
-          _currentPosition!.latitude,
-          _currentPosition!.longitude,
-        ),
-        zoom: 15.0,
-      ),
-      onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-      },
-      myLocationEnabled: false,
-      markers: {
-        Marker(
-          markerId: const MarkerId("current_position"),
-          position: LatLng(
-            _currentPosition!.latitude,
-            _currentPosition!.longitude,
-          ),
-          infoWindow: const InfoWindow(title: "현재 위치"),
-        ),
-      },
-    )
+            mapType: MapType.normal,
+            initialCameraPosition: CameraPosition(
+              target: LatLng(
+                _currentPosition!.latitude,
+                _currentPosition!.longitude,
+              ),
+              zoom: 15.0,
+            ),
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            myLocationEnabled: false,
+            markers: {
+              Marker(
+                markerId: const MarkerId("current_position"),
+                position: LatLng(
+                  _currentPosition!.latitude,
+                  _currentPosition!.longitude,
+                ),
+                infoWindow: const InfoWindow(title: "현재 위치"),
+              ),
+            },
+          )
         : const Center(child: CircularProgressIndicator());
   }
 
@@ -207,7 +257,7 @@ class _MainScreenState extends State<MainScreen> {
                     shape: const BeveledRectangleBorder(),
                     elevation: 0,
                     heroTag: 'but3',
-                    onPressed: () => _navigateToScreen(const SettingsScreen()),
+                    onPressed: () => _navigateToScreen(SettingsScreen()),
                     child: const Icon(
                       Icons.settings,
                       size: 40,

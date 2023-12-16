@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:test1/main.dart';
 import 'package:test1/main_screen.dart';
 import 'package:test1/sub_screen/manual_screen.dart';
+import 'package:test1/sub_screen/setting_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,6 +12,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String? id;
+  String? passwd;
+  TextEditingController idController = TextEditingController();
+  TextEditingController passwdController = TextEditingController();
+
+  @override
+  void dispose() {
+    idController.dispose();
+    passwdController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,22 +41,26 @@ class _LoginScreenState extends State<LoginScreen> {
               width: MediaQuery.sizeOf(context).width,
               height: MediaQuery.sizeOf(context).height * 0.15,
             ),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.7,
               child: TextField(
-                decoration: InputDecoration(
+                controller: idController,
+                decoration: const InputDecoration(
                   label: Text('ID'),
                   border: OutlineInputBorder(),
                 ),
               ),
             ),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.7,
-              child: TextField(
+              child: TextFormField(
+                controller: passwdController,
                 decoration: InputDecoration(
                   label: Text('PASSWORD'),
                   border: OutlineInputBorder(),
+                  hintText: '비밀번호를 입력하세요.',
                 ),
+                obscureText: true,
               ),
             ),
             Row(
@@ -56,7 +74,23 @@ class _LoginScreenState extends State<LoginScreen> {
                       backgroundColor:
                           MaterialStatePropertyAll<Color?>(Colors.blue),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      if(idController.text == '5645164' && passwdController.text == '123456789'){
+                        idController.text = '';
+                        passwdController.text = '';
+                        showToast('로그인 성공');
+                        communityPermission = true;
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MainScreen()),
+                        );
+                      }
+                      else{
+                        idController.text = '';
+                        passwdController.text = '';
+                        showToast('로그인 실패');
+                      }
+                    },
                     child: const Text(
                       '로그인',
                       style: TextStyle(
@@ -81,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           MaterialPageRoute(
                               builder: (context) => const MainScreen()));
                     },
-                    child: Text(
+                    child: const Text(
                       '비회원 접속',
                       style: TextStyle(
                         color: Colors.black,
@@ -110,15 +144,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 30,
+            const SizedBox(
+              height: 80,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
+                  padding: EdgeInsets.only(left: 5.0),
                   height: 40,
                   width: 60,
                   child: FloatingActionButton(
+                    heroTag: 'Bt6',
                     backgroundColor: Colors.transparent,
                     shape: const BeveledRectangleBorder(),
                     elevation: 0,
@@ -130,7 +167,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: const Icon(
                       Icons.accessibility,
-                      size: 40,
+                      size: 50,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(right: 5.0),
+                  height: 40,
+                  width: 60,
+                  child: FloatingActionButton(
+                    heroTag: 'Bt7',
+                    backgroundColor: Colors.transparent,
+                    shape: const BeveledRectangleBorder(),
+                    elevation: 0,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingsScreen()));
+                    },
+                    child: const Icon(
+                      Icons.settings,
+                      size: 50,
                       color: Colors.black,
                     ),
                   ),
