@@ -10,6 +10,8 @@ import 'package:test1/sub_screen/manual_screen.dart';
 import 'package:test1/sub_screen/setting_screen.dart';
 import 'package:test1/tools_and_data/hazard_screen.dart';
 
+import './WeatherScreen.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
@@ -39,7 +41,7 @@ class _MainScreenState extends State<MainScreen> {
       return;
     }
     _positionStreamSubscription = Geolocator.getPositionStream().listen(
-      (Position position) {
+          (Position position) {
         setState(() {
           _currentPosition = position;
           _isLocationReady = true;
@@ -56,10 +58,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 상태바의 높이 확인
     var statusBarHeight = MediaQuery.of(context).padding.top;
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+
     return Scaffold(
       body: Column(
         children: [
@@ -67,6 +68,7 @@ class _MainScreenState extends State<MainScreen> {
             height: statusBarHeight,
             color: Colors.transparent,
           ),
+          WeatherScreen(), // WeatherScreen을 맨 위로 이동
           Expanded(
             child: Stack(
               children: [
@@ -103,29 +105,29 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildGoogleMap() {
     return _isLocationReady
         ? GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: CameraPosition(
-              target: LatLng(
-                _currentPosition!.latitude,
-                _currentPosition!.longitude,
-              ),
-              zoom: 15.0,
-            ),
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-            myLocationEnabled: false,
-            markers: {
-              Marker(
-                markerId: const MarkerId("current_position"),
-                position: LatLng(
-                  _currentPosition!.latitude,
-                  _currentPosition!.longitude,
-                ),
-                infoWindow: const InfoWindow(title: "현재 위치"),
-              ),
-            },
-          )
+      mapType: MapType.normal,
+      initialCameraPosition: CameraPosition(
+        target: LatLng(
+          _currentPosition!.latitude,
+          _currentPosition!.longitude,
+        ),
+        zoom: 15.0,
+      ),
+      onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
+      },
+      myLocationEnabled: false,
+      markers: {
+        Marker(
+          markerId: const MarkerId("current_position"),
+          position: LatLng(
+            _currentPosition!.latitude,
+            _currentPosition!.longitude,
+          ),
+          infoWindow: const InfoWindow(title: "현재 위치"),
+        ),
+      },
+    )
         : const Center(child: CircularProgressIndicator());
   }
 
@@ -163,6 +165,7 @@ class _MainScreenState extends State<MainScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(width: 10), // 추가된 간격 조정
                 Container(
                   height: 40,
                   width: 60,
