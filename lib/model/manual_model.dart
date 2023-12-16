@@ -40,7 +40,7 @@ class ManualTile extends StatelessWidget {
         );
       },
       title: Text(manual.title, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
-      subtitle: Text(manual.description),
+      subtitle: Text(manual.description, maxLines: 2,),
       leading: Container(
         child: Image.network(manual.image),
         width: MediaQuery.of(context).size.width * 0.3,
