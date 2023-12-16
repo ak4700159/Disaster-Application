@@ -6,7 +6,7 @@ import '../model/setting_model.dart';
 
 class SettingsScreen extends StatelessWidget {
   SettingsScreen({super.key});
-  List<Setting> settings = Settings().getSettings();
+  final List<Setting> settings = Settings().getSettings();
 
   @override
   Widget build(BuildContext context) {
