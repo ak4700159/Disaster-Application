@@ -36,10 +36,16 @@ class _LoginScreenState extends State<LoginScreen> {
               width: MediaQuery.sizeOf(context).width,
               height: MediaQuery.sizeOf(context).height * 0.3,
             ),
-            Image.asset(
-              'assets/name.jpg',
-              width: MediaQuery.sizeOf(context).width,
-              height: MediaQuery.sizeOf(context).height * 0.15,
+            const Text(
+              'Endless',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+            ),
+            Container(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: const Text(
+                ': predicted Disaster',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.7,
@@ -55,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
               width: MediaQuery.of(context).size.width * 0.7,
               child: TextFormField(
                 controller: passwdController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   label: Text('PASSWORD'),
                   border: OutlineInputBorder(),
                   hintText: '비밀번호를 입력하세요.',
@@ -75,17 +81,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           MaterialStatePropertyAll<Color?>(Colors.blue),
                     ),
                     onPressed: () {
-                      if(idController.text == '5645164' && passwdController.text == '123456789'){
+                      if (idController.text == '5645164' &&
+                          passwdController.text == '123456789') {
                         idController.text = '';
                         passwdController.text = '';
                         showToast('로그인 성공');
                         communityPermission = true;
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MainScreen()),
+                          context,
+                          MaterialPageRoute(builder: (context) => MainScreen()),
                         );
-                      }
-                      else{
+                      } else {
                         idController.text = '';
                         passwdController.text = '';
                         showToast('로그인 실패');
