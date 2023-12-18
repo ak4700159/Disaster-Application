@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:test1/WeatherScreen.dart';
 import 'package:test1/model/hazard_graph.dart';
 
 import '../main.dart';
