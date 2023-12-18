@@ -5,6 +5,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:test1/sub_screen/login_screen.dart';
 
 bool communityPermission = false;
+double hazardRate = 0;
+double temperatureInKelvin = 0;
+String? hazardMode;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

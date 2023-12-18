@@ -55,17 +55,28 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Widget build(BuildContext context) {
     return Positioned(
       top: 10,
-      left: 10,
       child: GestureDetector(
         onTap: () {
           _showWeatherDetails(weatherResult);
         },
         child: Container(
           padding: const EdgeInsets.all(10.0),
-          color: Colors.blue,
-          child: Text(
-            '온도: ${temperatureInCelsius.toStringAsFixed(2)} °C',
-            style: TextStyle(color: Colors.white),
+          color: Colors.transparent,
+          child: Row(
+            children: [
+              const Icon(
+                Icons.sunny,
+                size: 40,
+              ),
+              Text(
+                '온도: ${temperatureInCelsius.toStringAsFixed(2)} °C',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -79,12 +90,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
       // 자동적으로
       weatherResult = await helper.getWeather('daegu');
       setState(() {
-        double temperatureInKelvin = weatherResult['main']['temp'];
+        temperatureInKelvin = weatherResult['main']['temp'];
         temperatureInCelsius = temperatureInKelvin - 273.15;
       });
     } catch (e) {
       print('Error: $e');
-
     }
   }
 
@@ -101,8 +111,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
         double maxTemperatureInKelvin = main['temp_max'];
         double feelsLikeInKelvin = main['feels_like'];
 
-
-
         return AlertDialog(
           title: Text('지역: ${weatherResult['name']}'), // 지역
           content: SingleChildScrollView(
@@ -110,16 +118,21 @@ class _WeatherScreenState extends State<WeatherScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('온도: ${temperatureInCelsius.toStringAsFixed(2)} °C'),
-                Text('체감온도: ${(feelsLikeInKelvin - 273.15).toStringAsFixed(2)} °C'), // 체감온도 추가
+                Text(
+                    '체감온도: ${(feelsLikeInKelvin - 273.15).toStringAsFixed(2)} °C'), // 체감온도 추가
                 Text('날씨: ${weather['description']}'),
-                Text('최저 온도: ${(minTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
-                Text('최고 온도: ${(maxTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
+                Text(
+                    '최저 온도: ${(minTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
+                Text(
+                    '최고 온도: ${(maxTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
                 Text('습도: ${main['humidity']}%'),
                 Text('기압: ${main['pressure']} hPa'),
                 Text('풍향: ${wind['deg']}°'), // 풍향 정보 추가
                 Text('풍속: ${wind['speed']} m/s'),
-                Text('일출 시간: ${DateTime.fromMillisecondsSinceEpoch(sys['sunrise'] * 1000)}'),
-                Text('일몰 시간: ${DateTime.fromMillisecondsSinceEpoch(sys['sunset'] * 1000)}'),
+                Text(
+                    '일출 시간: ${DateTime.fromMillisecondsSinceEpoch(sys['sunrise'] * 1000)}'),
+                Text(
+                    '일몰 시간: ${DateTime.fromMillisecondsSinceEpoch(sys['sunset'] * 1000)}'),
               ],
             ),
           ),
@@ -135,5 +148,4 @@ class _WeatherScreenState extends State<WeatherScreen> {
       },
     );
   }
-
 }
