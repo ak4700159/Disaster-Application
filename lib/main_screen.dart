@@ -14,6 +14,7 @@ import 'package:test1/sub_screen/setting_screen.dart';
 import 'package:test1/sub_screen/hazard_screen.dart';
 import 'WeatherScreen.dart';
 import 'model/manual_model.dart';
+import 'package:test1/dumy/custom_markers.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -249,78 +250,41 @@ class _MainScreenState extends State<MainScreen> {
               _controller.complete(controller);
             },
             myLocationEnabled: false,
-            markers: {
-              if (_currentPosition != null)
-                Marker(
-                  markerId: const MarkerId("current_position"),
-                  position: LatLng(
-                    _currentPosition!.latitude,
-                    _currentPosition!.longitude,
-                  ),
-                  infoWindow: const InfoWindow(title: "현재 위치"),
-                ),
-              if (_showCustomMarkers) ...[
-                Marker(
-                  markerId: const MarkerId("custom_marker_2"),
-                  position: LatLng(35.8632694, 128.490464),
-                  infoWindow:
-                  const InfoWindow(title: "한화꿈에그린아파트(지하1층 주차장) 대피소"),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueAzure),
-                ),
-                Marker(
-                  markerId: const MarkerId("custom_marker_3"),
-                  position: LatLng(35.8530918, 128.478341),
-                  infoWindow: const InfoWindow(title: "강창역(지하2층 역사) 대피소"),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueAzure),
-                ),
-                Marker(
-                  markerId: const MarkerId("custom_marker_4"),
-                  position: LatLng(35.8537495, 128.474689),
-                  infoWindow: const InfoWindow(title: "우방유쉘(지하1층 주차장) 대피소"),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueAzure),
-                ),
-                Marker(
-                  markerId: const MarkerId("custom_marker_5"),
-                  position: LatLng(35.8588913, 128.504817),
-                  infoWindow: const InfoWindow(title: "서한2차아파트 대피소"),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueAzure),
-                ),
-                Marker(
-                  markerId: const MarkerId("custom_marker_6"),
-                  position: LatLng(35.8576148, 128.503841),
-                  infoWindow: const InfoWindow(title: "동서서한아파트 대피소"),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueAzure),
-                ),
-                Marker(
-                  markerId: const MarkerId("custom_marker_7"),
-                  position: LatLng(35.8556738, 128.504125),
-                  infoWindow: const InfoWindow(title: "보성화성아파트 대피소"),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueAzure),
-                ),
-                Marker(
-                  markerId: const MarkerId("custom_marker_8"),
-                  position: LatLng(35.8540803, 128.500398),
-                  infoWindow: const InfoWindow(title: "청남타운 대피소"),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueAzure),
-                ),
-                Marker(
-                  markerId: const MarkerId("custom_marker_9"),
-                  position: LatLng(35.8524038, 128.500422),
-                  infoWindow: const InfoWindow(title: "대백창신한라아파트 대피소"),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueAzure),
-                ),
-              ],
-            },
-          )
+      markers: {
+        if (_currentPosition != null)
+          Marker(
+            markerId: const MarkerId("current_position"),
+            position: LatLng(
+              _currentPosition!.latitude,
+              _currentPosition!.longitude,
+            ),
+            infoWindow: const InfoWindow(title: "현재 위치"),
+          ),
+        if (_showCustomMarkers) ..._buildCustomMarkers(),
+      },
+    )
         : const Center(child: CircularProgressIndicator());
+  }
+
+  List<Marker> _buildCustomMarkers() {
+    List<Marker> markers = [];
+
+    for (CustomMarkerInfo info in customMarkers) {
+      markers.add(
+        Marker(
+          markerId: MarkerId(info.markerId),
+          position: info.position,
+          infoWindow: InfoWindow(
+            title: info.title,
+            snippet: info.info,
+          ),
+          icon: BitmapDescriptor.defaultMarkerWithHue(240.0), // 예시: 초록색 마커
+
+        ),
+      );
+    }
+
+    return markers;
   }
 
   Widget _buildLocationButtons() {
