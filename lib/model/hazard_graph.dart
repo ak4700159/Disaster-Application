@@ -10,18 +10,15 @@ class HazardGraph extends CustomPainter{
     // TODO: implement paint
     Paint paint = Paint()
     ..color = Colors.blue
-    ..strokeCap = StrokeCap.square
-    ..strokeWidth = 25.0;
-    Offset p1 = Offset(10, 0);
-    Offset p2 = Offset(10, 100 - hazardRate);
+    ..strokeCap = StrokeCap.butt
+    ..strokeWidth = 20.0;
+    Offset p1 = Offset(0, 0);
+    Offset p2 = Offset(0, 100 - hazardRate);
     canvas.drawLine(p1, p2, paint);
 
-    if(hazardRate == 0)
-      return;
-
     paint.color = Colors.red;
-    p1 = Offset(10, 100 - hazardRate);
-    p2 = Offset(10, 100);
+    p1 = Offset(0, 100 - hazardRate);
+    p2 = Offset(0, 100);
     canvas.drawLine(p1, p2, paint);
   }
 

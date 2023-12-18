@@ -1,90 +1,67 @@
 import 'dart:async';
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:test1/main.dart';
+import 'package:test1/WeatherScreen.dart';
+import 'package:test1/model/hazard_graph.dart';
 
-class HttpHelper {
-  final String domain = 'api.openweathermap.org';
-  final String path = 'data/2.5/weather';
-  final String apiKey = 'ca47ef2434b9b55eb7b7706137a15f1f';
-
-  Future<Map<String, dynamic>> getWeather(String location) async {
-    Map<String, dynamic> parameters = {'q': location, 'appid': apiKey};
-    Uri uri = Uri.https(domain, path, parameters);
-    http.Response response = await http.get(uri);
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> result = json.decode(response.body);
-      return result;
-    } else {
-      throw Exception('Failed to load weather data');
-    }
-  }
-}
-
-class WeatherScreen extends StatefulWidget {
-  const WeatherScreen({Key? key}) : super(key: key);
+class HazardScreen extends StatefulWidget {
+  HazardScreen({super.key});
 
   @override
-  _WeatherScreenState createState() => _WeatherScreenState();
+  State<HazardScreen> createState() => _HazardScreenState();
 }
 
-class _WeatherScreenState extends State<WeatherScreen> {
-  String result = ' ';
-  double temperatureInCelsius = 0.0;
-  Map<String, dynamic> weatherResult = {};
+class _HazardScreenState extends State<HazardScreen> {
+  double hazardRate = 0;
+  double temperatureInCelsius = 0;
+
+  late Map<String, dynamic> weatherResult;
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+
+      },
+      child: CustomPaint(
+        size: const Size(100, 100),
+        foregroundPainter: HazardGraph(hazardRate: hazardRate),
+      ),
+    );
+  }
 
   @override
   void initState() {
-    super.initState();
     getWeatherData();
 
-    // 타이머 설정
     const Duration updateInterval = Duration(minutes: 3); //3분마다 업데이트
     Timer.periodic(updateInterval, (Timer t) => getWeatherData());
-  }
-
-  @override
-  void dispose() {
-    showToast('날씨 스크린이 닫혔습니다.');
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: 10,
-      left: 10,
-      child: GestureDetector(
-        onTap: () {
-          _showWeatherDetails(weatherResult);
-        },
-        child: Container(
-          padding: const EdgeInsets.all(10.0),
-          color: Colors.blue,
-          child: Text(
-            '온도: ${temperatureInCelsius.toStringAsFixed(2)} °C',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      ),
-    );
+    super.initState();
   }
 
   void getWeatherData() async {
     HttpHelper helper = HttpHelper();
 
     try {
-      // 자동적으로
       weatherResult = await helper.getWeather('daegu');
       setState(() {
         double temperatureInKelvin = weatherResult['main']['temp'];
         temperatureInCelsius = temperatureInKelvin - 273.15;
+        updateHazardRate();
       });
     } catch (e) {
       print('Error: $e');
 
+    }
+  }
+
+  void updateHazardRate(){
+    if (temperatureInCelsius >= 35 && temperatureInCelsius < 45){
+      hazardRate = (45 - temperatureInCelsius) / 10 * 100;
+      return;
+    }
+
+    if(temperatureInCelsius <= -5 && temperatureInCelsius > 20){
+      hazardRate = (-temperatureInCelsius - 5) / 15 * 100;
     }
   }
 

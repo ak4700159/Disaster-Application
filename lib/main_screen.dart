@@ -9,7 +9,7 @@ import 'package:test1/sub_screen/disaster_screen.dart';
 import 'package:test1/sub_screen/login_screen.dart';
 import 'package:test1/sub_screen/manual_screen.dart';
 import 'package:test1/sub_screen/setting_screen.dart';
-import 'package:test1/tools_and_data/hazard_screen.dart';
+import 'package:test1/sub_screen/hazard_screen.dart';
 
 import './WeatherScreen.dart';
 
@@ -127,13 +127,6 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "현재 좌표: ${_currentPosition?.latitude}, ${_currentPosition?.longitude}",
-                style: const TextStyle(fontSize: 16.0),
-              ),
-            ),
           ],
         ),
       ),
@@ -142,8 +135,8 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildHazardStick() {
     return Positioned(
-      top: 100,
-      left: 10,
+      top: MediaQuery.of(context).size.height * 0.1,
+      left: 30,
       child: Column(
         children: [
           HazardScreen(),
