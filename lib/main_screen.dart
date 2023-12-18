@@ -376,7 +376,9 @@ class _MainScreenState extends State<MainScreen> {
                   child: FloatingActionButton(
                     heroTag: 'but6',
                     onPressed: () {
-                      nowManual = findManual(ManualDumy().getManuals(), hazardMode!);
+                      if(hazardMode != null){
+                        nowManual = findManual(ManualDumy().getManuals(), hazardMode!);
+                      }
                       setState(() {});
                     },
                     backgroundColor: Colors.transparent,

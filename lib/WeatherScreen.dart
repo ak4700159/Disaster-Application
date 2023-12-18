@@ -46,12 +46,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   @override
-  void dispose() {
-    showToast('날씨 스크린이 닫혔습니다.');
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Positioned(
       top: 10,
@@ -64,6 +58,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
           color: Colors.transparent,
           child: Row(
             children: [
+              SizedBox(
+                width: 20,
+              ),
               const Icon(
                 Icons.sunny,
                 size: 40,
@@ -92,7 +89,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       setState(() {
         temperatureInKelvin = weatherResult['main']['temp'];
         temperatureInCelsius = temperatureInKelvin - 273.15;
-        temperatureInCelsius = 50;
+        temperatureInCelsius = -15;
       });
     } catch (e) {
       print('Error: $e');

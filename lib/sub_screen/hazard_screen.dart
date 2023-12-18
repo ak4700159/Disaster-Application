@@ -73,7 +73,7 @@ class _HazardScreenState extends State<HazardScreen> {
   }
 
   void updateHazardRate() {
-    temperatureInCelsius = 50;
+    temperatureInCelsius = -15;
     if (temperatureInCelsius >= 35 && temperatureInCelsius < 45) {
       hazardRate = (temperatureInCelsius - 35) / 10 * 100;
       hazardMode = '폭염';
