@@ -12,6 +12,7 @@ import 'package:test1/sub_screen/login_screen.dart';
 import 'package:test1/sub_screen/manual_screen.dart';
 import 'package:test1/sub_screen/setting_screen.dart';
 import 'package:test1/sub_screen/hazard_screen.dart';
+import 'WeatherScreen.dart';
 import 'model/manual_model.dart';
 
 class MainScreen extends StatefulWidget {

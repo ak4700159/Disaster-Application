@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:test1/WeatherScreen.dart';
 import 'package:test1/model/hazard_graph.dart';
 
 import '../main.dart';
@@ -72,6 +73,7 @@ class _HazardScreenState extends State<HazardScreen> {
   }
 
   void updateHazardRate() {
+    temperatureInCelsius;
     if (temperatureInCelsius >= 35 && temperatureInCelsius < 45) {
       hazardRate = (temperatureInCelsius - 35) / 10 * 100;
       hazardMode = '폭염';
@@ -89,8 +91,8 @@ class _HazardScreenState extends State<HazardScreen> {
       return;
     }
     if (temperatureInCelsius <= -20) {
-      hazardRate = 100;
       hazardMode = '한파';
+      hazardRate = 100;
       return;
     }
   }
