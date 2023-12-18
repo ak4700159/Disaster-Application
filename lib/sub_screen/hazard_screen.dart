@@ -73,7 +73,7 @@ class _HazardScreenState extends State<HazardScreen> {
   }
 
   void updateHazardRate() {
-    temperatureInCelsius;
+    temperatureInCelsius = 50;
     if (temperatureInCelsius >= 35 && temperatureInCelsius < 45) {
       hazardRate = (temperatureInCelsius - 35) / 10 * 100;
       hazardMode = '폭염';
@@ -104,8 +104,6 @@ class _HazardScreenState extends State<HazardScreen> {
         var main = weatherResult['main'];
         var weather = weatherResult['weather'][0];
 
-        double minTemperatureInKelvin = main['temp_min'];
-        double maxTemperatureInKelvin = main['temp_max'];
         double feelsLikeInKelvin = main['feels_like'];
 
         return AlertDialog(
@@ -118,10 +116,6 @@ class _HazardScreenState extends State<HazardScreen> {
                 Text(
                     '체감온도: ${(feelsLikeInKelvin - 273.15).toStringAsFixed(2)} °C'), // 체감온도 추가
                 Text('날씨: ${weather['description']}'),
-                Text(
-                    '최저 온도: ${(minTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
-                Text(
-                    '최고 온도: ${(maxTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
                 Text(
                   '현재 위험도: ${hazardRate}%',
                   style: hazardRate > 50

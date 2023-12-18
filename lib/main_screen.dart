@@ -23,12 +23,13 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  Completer<GoogleMapController> _controller = Completer();
+  final Completer<GoogleMapController> _controller = Completer();
   LocationPermission? _locationPermission;
   StreamSubscription<Position>? _positionStreamSubscription;
   Position? _currentPosition;
   bool _isLocationReady = false;
   bool _showCustomMarkers = true;
+  Manual? nowManual;
 
   @override
   void initState() {
@@ -146,7 +147,6 @@ class _MainScreenState extends State<MainScreen> {
 
   Manual findManual(List<Manual> manuals, String? mode) {
     Manual? result;
-
     for (int idx = 0; idx < manuals.length; idx++) {
       if (manuals[idx].title == mode) {
         result = manuals[idx];
@@ -159,9 +159,9 @@ class _MainScreenState extends State<MainScreen> {
     return Positioned(
       top: MediaQuery.of(context).size.height * 0.1,
       right: 10,
-      child: hazardMode != null
+      child: hazardMode != null && nowManual != null
           ? Container(
-              padding: EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(10.0),
               width: 250,
               height: 80,
               decoration: ShapeDecoration(
@@ -172,11 +172,32 @@ class _MainScreenState extends State<MainScreen> {
               ),
               child: SingleChildScrollView(
                 child: ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(nowManual!.title),
+                          content: SizedBox(
+                            width: 300,
+                            height: 300,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: <Widget>[
+                                  Image.network(nowManual!.image),
+                                  Text(nowManual!.description),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
                   leading: Image.network(
-                      findManual(ManualDumy().getManuals(), hazardMode!).image),
+                      nowManual!.image),
                   title: Text(
-                    findManual(ManualDumy().getManuals(), hazardMode!).title +
+                    nowManual!.title +
                         '주의!!',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
@@ -192,12 +213,12 @@ class _MainScreenState extends State<MainScreen> {
               ),
             )
           : const Text(
-            '이용해주셔서 감사합니다.',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 10,
+              '간단 사용법',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
             ),
-          ),
     );
   }
 
@@ -240,17 +261,10 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               if (_showCustomMarkers) ...[
                 Marker(
-                  markerId: const MarkerId("custom_marker"),
-                  position: LatLng(35.8515176, 128.491982), //y좌표, x좌표
-                  infoWindow: const InfoWindow(title: "계명대역(지하2층 역사) 대피소"),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueAzure),
-                ),
-                Marker(
                   markerId: const MarkerId("custom_marker_2"),
                   position: LatLng(35.8632694, 128.490464),
                   infoWindow:
-                      const InfoWindow(title: "한화꿈에그린아파트(지하1층 주차장) 대피소"),
+                  const InfoWindow(title: "한화꿈에그린아파트(지하1층 주차장) 대피소"),
                   icon: BitmapDescriptor.defaultMarkerWithHue(
                       BitmapDescriptor.hueAzure),
                 ),
@@ -338,7 +352,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 Row(
                   children: [
-                    Container(
+                    SizedBox(
                       height: 40,
                       width: 40,
                       child: FloatingActionButton(
@@ -356,12 +370,13 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ],
                 ),
-                Container(
+                SizedBox(
                   height: 40,
                   width: 40,
                   child: FloatingActionButton(
                     heroTag: 'but6',
                     onPressed: () {
+                      nowManual = findManual(ManualDumy().getManuals(), hazardMode!);
                       setState(() {});
                     },
                     backgroundColor: Colors.transparent,
@@ -376,15 +391,15 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(width: 10), // 추가된 간격 조정
-                Container(
+                const SizedBox(width: 10), // 추가된 간격 조정
+                SizedBox(
                   height: 40,
                   width: 60,
                   child: FloatingActionButton(
@@ -400,7 +415,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   height: 40,
                   width: 60,
                   child: FloatingActionButton(
@@ -416,7 +431,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   height: 40,
                   width: 60,
                   child: FloatingActionButton(
@@ -432,7 +447,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   height: 40,
                   width: 60,
                   child: FloatingActionButton(
@@ -448,7 +463,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 25,
                 ),
               ],

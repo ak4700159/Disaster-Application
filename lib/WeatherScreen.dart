@@ -92,6 +92,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       setState(() {
         temperatureInKelvin = weatherResult['main']['temp'];
         temperatureInCelsius = temperatureInKelvin - 273.15;
+        temperatureInCelsius = 50;
       });
     } catch (e) {
       print('Error: $e');
@@ -107,8 +108,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
         var wind = weatherResult['wind'];
         var sys = weatherResult['sys'];
 
-        double minTemperatureInKelvin = main['temp_min'];
-        double maxTemperatureInKelvin = main['temp_max'];
         double feelsLikeInKelvin = main['feels_like'];
 
         return AlertDialog(
@@ -121,10 +120,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 Text(
                     '체감온도: ${(feelsLikeInKelvin - 273.15).toStringAsFixed(2)} °C'), // 체감온도 추가
                 Text('날씨: ${weather['description']}'),
-                Text(
-                    '최저 온도: ${(minTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
-                Text(
-                    '최고 온도: ${(maxTemperatureInKelvin - 273.15).toStringAsFixed(2)} °C'),
                 Text('습도: ${main['humidity']}%'),
                 Text('기압: ${main['pressure']} hPa'),
                 Text('풍향: ${wind['deg']}°'), // 풍향 정보 추가
