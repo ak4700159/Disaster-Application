@@ -6,6 +6,8 @@ import 'package:test1/model/hazard_graph.dart';
 
 import '../main.dart';
 
+// 위험도 그래프를 나타내는 스크린 막대
+// 위험도 비율에 따라 유동적으로 변화
 class HazardScreen extends StatefulWidget {
   HazardScreen({super.key});
 
@@ -57,6 +59,7 @@ class _HazardScreenState extends State<HazardScreen> {
     super.initState();
   }
 
+  // 날씨 정보를 얻어오면서 위험도 비율도 업데이트
   void getWeatherData() async {
     HttpHelper helper = HttpHelper();
 
@@ -72,6 +75,7 @@ class _HazardScreenState extends State<HazardScreen> {
     }
   }
 
+  //
   void updateHazardRate() {
     temperatureInCelsius = -15;
     if (temperatureInCelsius >= 35 && temperatureInCelsius < 45) {

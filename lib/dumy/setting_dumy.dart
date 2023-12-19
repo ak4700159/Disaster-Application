@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../model/setting_model.dart';
 
+// 옵션 더미
 class Settings {
   List<Setting> settings = [
     Setting(

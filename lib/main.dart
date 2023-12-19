@@ -4,10 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:test1/sub_screen/login_screen.dart';
 
+// 커뮤니티 들어갈 수 있는지 권환 확인
 bool communityPermission = false;
+// 어플의 주요 기능을 당담하는 위험도 비율
 double hazardRate = 0;
+// 밑에 변수는 우리가 임의로 날씨 온도를 지정해 테스트할 수 있는 환경 구축
 double temperatureInKelvin = 0;
+// 어떤 조건에서 위허몯가 결정되냐에 따라 위험도 모드가 정해지고
+// 그에 맞는 대응 메뉴얼을 띄울 때 사용
 String? hazardMode;
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +27,7 @@ Future<void> main() async {
   );
 }
 
+// 토스트 하수 밑에 문자 메시지를 보여주는 역할
 void showToast(String message) {
   Fluttertoast.showToast(
     msg: message,

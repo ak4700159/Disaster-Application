@@ -1,5 +1,6 @@
 import '../model/manual_model.dart';
 
+// 메뉴얼 모아둔 더미
 class ManualDumy{
   final List<Manual> _manuals = [
     Manual(image:'https://search.pstatic.net/common/?src=http%3A%2F%2Fcafefiles.naver.net%2F20160908_139%2Fgreen4785_1473306763057rRlGm_JPEG%2F1473306751719.jpg&type=sc960_832' , title: '폭우',

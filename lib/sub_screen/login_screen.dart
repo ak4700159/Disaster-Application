@@ -5,6 +5,9 @@ import 'package:test1/main_screen.dart';
 import 'package:test1/sub_screen/manual_screen.dart';
 import 'package:test1/sub_screen/setting_screen.dart';
 
+// 맨 처음은 어플 키면 맞이하는 화면
+// 아직 회원가입, 아이디, 비밀번호 찾기는 미구현 ( 로그인 데이터 베이스 미구현 )
+// ID : 5645164 / passwd : 123456789 입력 시 로그인 가능
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -192,6 +195,8 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 80,
               ),
+              // 지도맵에 있는 버튼 대응메뉴얼 확인 버튼, 환경 설정 버튼
+              // 원래는 환경 설정 버튼 대신 대피소 위치 표시 화면 구성할 예정이었음
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

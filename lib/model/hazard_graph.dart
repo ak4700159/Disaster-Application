@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// 그래프 그려주도록 하는 클래스 - Canvus 활용
 class HazardGraph extends CustomPainter{
   final double hazardRate;
   HazardGraph({required this.hazardRate});

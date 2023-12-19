@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:test1/main.dart';
 
+// 기상 api 가져오기
 class HttpHelper {
   final String domain = 'api.openweathermap.org';
   final String path = 'data/2.5/weather';
@@ -23,6 +24,8 @@ class HttpHelper {
   }
 }
 
+// 좌측 상단에 온도 표시 및 터치 시 상세 날씨 정보 확인 가능
+// 지도 위에 표시됨
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({Key? key}) : super(key: key);
 

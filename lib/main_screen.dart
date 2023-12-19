@@ -16,6 +16,8 @@ import 'WeatherScreen.dart';
 import 'model/manual_model.dart';
 import 'package:test1/dumy/custom_markers.dart';
 
+
+// 메인 스크린 : 로그인 화면에서 회원 로그인 or 비회원 접속을 통해 넘어가지는 화면.
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
@@ -146,6 +148,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  // 모드에 따른 메뉴얼 탐색 하는 함수
   Manual findManual(List<Manual> manuals, String? mode) {
     Manual? result;
     for (int idx = 0; idx < manuals.length; idx++) {
@@ -156,6 +159,7 @@ class _MainScreenState extends State<MainScreen> {
     return result!;
   }
 
+  // 모드에 따라 지종되는 대응 메뉴얼 - 지도맵 위에 표시
   Widget _buildManualScreen() {
     return Positioned(
       top: MediaQuery.of(context).size.height * 0.1,
@@ -223,6 +227,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  // 위험도 막대
   Widget _buildHazardStick() {
     return Positioned(
       top: MediaQuery.of(context).size.height * 0.1,
@@ -235,6 +240,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  // 구글맵 - 대피소 포함
   Widget _buildGoogleMap() {
     return _isLocationReady
         ? GoogleMap(
@@ -266,6 +272,7 @@ class _MainScreenState extends State<MainScreen> {
         : const Center(child: CircularProgressIndicator());
   }
 
+  // 대피서 위치를 받아와 지도에 표시
   List<Marker> _buildCustomMarkers() {
     List<Marker> markers = [];
 
@@ -278,15 +285,15 @@ class _MainScreenState extends State<MainScreen> {
             title: info.title,
             snippet: info.info,
           ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(240.0), // 예시: 초록색 마커
+          icon: BitmapDescriptor.defaultMarkerWithHue(240.0),
 
         ),
       );
     }
-
     return markers;
   }
 
+  // 지도 위에 띄워져 있는 모든 버튼들
   Widget _buildLocationButtons() {
     return Positioned(
       left: 10, // 왼쪽 여백 추가

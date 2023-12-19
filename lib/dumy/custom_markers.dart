@@ -2,6 +2,7 @@
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+// 대피소 정보를 모아둔 더미
 class CustomMarkerInfo {
   final String markerId;
   final LatLng position;

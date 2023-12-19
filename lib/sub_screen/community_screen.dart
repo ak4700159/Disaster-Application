@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+
+// 커뮤니티 화면만 구현
+// 기능들은 동작 X
+// 커뮤니티 권한을 이용해 화면 진입 못하게 하는 기능도 아직 미구현
 class Screen1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

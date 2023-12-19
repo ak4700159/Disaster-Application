@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// 미구현 -- 누적된 데이터를 받아오는데 시간적 한계
 class DisasterScreen extends StatelessWidget {
   const DisasterScreen({super.key});
 
