@@ -13,7 +13,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          '설정',
+          '설정 - 미구현',
         ),
       ),
       body: ListView.separated(

@@ -10,7 +10,7 @@ class Screen1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('커뮤니티'),
+        title: const Text('커뮤니티 - 미구현'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {

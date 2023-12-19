@@ -17,7 +17,6 @@ class HazardScreen extends StatefulWidget {
 
 class _HazardScreenState extends State<HazardScreen> {
   double temperatureInCelsius = 0;
-
   late Map<String, dynamic> weatherResult;
 
   @override
@@ -52,10 +51,8 @@ class _HazardScreenState extends State<HazardScreen> {
   @override
   void initState() {
     getWeatherData();
-
     const Duration updateInterval = Duration(minutes: 3); //3분마다 업데이트
     Timer.periodic(updateInterval, (Timer t) => getWeatherData());
-    setState(() {});
     super.initState();
   }
 
@@ -77,7 +74,7 @@ class _HazardScreenState extends State<HazardScreen> {
 
   //
   void updateHazardRate() {
-    temperatureInCelsius = -15;
+    temperatureInCelsius = testTemperature;
     if (temperatureInCelsius >= 35 && temperatureInCelsius < 45) {
       hazardRate = (temperatureInCelsius - 35) / 10 * 100;
       hazardMode = '폭염';

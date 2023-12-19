@@ -16,7 +16,6 @@ import 'WeatherScreen.dart';
 import 'model/manual_model.dart';
 import 'package:test1/dumy/custom_markers.dart';
 
-
 // 메인 스크린 : 로그인 화면에서 회원 로그인 or 비회원 접속을 통해 넘어가지는 화면.
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -26,18 +25,30 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final TextEditingController _testController = TextEditingController();
   final Completer<GoogleMapController> _controller = Completer();
   LocationPermission? _locationPermission;
   StreamSubscription<Position>? _positionStreamSubscription;
+  double temperatureInCelsius = 0;
+  late Map<String, dynamic> weatherResult;
   Position? _currentPosition;
   bool _isLocationReady = false;
   bool _showCustomMarkers = true;
+  bool _isManualReady = false;
   Manual? nowManual;
 
   @override
   void initState() {
     super.initState();
     _checkLocationPermission();
+    getWeatherData();
+    Future.delayed(const Duration(seconds: 2), () {
+      _isManualReady = true;
+      nowManual = findManual(ManualDumy().getManuals(), hazardMode!);
+      setState(() {});
+    });
+    const Duration updateInterval = Duration(minutes: 3); //3분마다 업데이트
+    Timer.periodic(updateInterval, (Timer t) => getWeatherData());
   }
 
   void _toggleCustomMarkers() {
@@ -67,6 +78,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void dispose() {
     _positionStreamSubscription?.cancel();
+    _testController.dispose();
     super.dispose();
   }
 
@@ -139,7 +151,44 @@ class _MainScreenState extends State<MainScreen> {
                   _buildLocationButtons(),
                   WeatherScreen(), // WeatherScreen을 맨 위로 이동
                   _buildManualScreen(),
+                  _buildTestBox(),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTestBox() {
+    return Positioned(
+      right: 10,
+      top: 10,
+      child: Container(
+        child: Row(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.3,
+              child: TextField(
+                controller: _testController,
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.2,
+              child: OutlinedButton(
+                onPressed: () {
+                  testTemperature = double.parse(_testController.text);
+                  didUpdateWidget(const MainScreen());
+                  _testController.text = '';
+                },
+                child: const Text(
+                  'Update',
+                  style: TextStyle(
+                    fontSize: 10,
+                    decoration: TextDecoration.lineThrough,
+                  ),
+                ),
               ),
             ),
           ],
@@ -159,72 +208,88 @@ class _MainScreenState extends State<MainScreen> {
     return result!;
   }
 
-  // 모드에 따라 지종되는 대응 메뉴얼 - 지도맵 위에 표시
+  // 모드에 따라 적용되는 대응 메뉴얼 - 지도맵 위에 표시
   Widget _buildManualScreen() {
-    return Positioned(
-      top: MediaQuery.of(context).size.height * 0.1,
-      right: 10,
-      child: hazardMode != null && nowManual != null
-          ? Container(
-              padding: const EdgeInsets.all(10.0),
-              width: 250,
-              height: 80,
-              decoration: ShapeDecoration(
-                shape: Border.all(
-                  width: 2.0,
-                  color: Colors.red,
-                ),
-              ),
-              child: SingleChildScrollView(
-                child: ListTile(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text(nowManual!.title),
-                          content: SizedBox(
-                            width: 300,
-                            height: 300,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: <Widget>[
-                                  Image.network(nowManual!.image),
-                                  Text(nowManual!.description),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  leading: Image.network(
-                      nowManual!.image),
-                  title: Text(
-                    nowManual!.title +
-                        '주의!!',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+    return !_isManualReady
+        ? Positioned(
+            top: MediaQuery.of(context).size.height * 0.1,
+            right: 10,
+            child: const Center(
+              child: Icon(Icons.rotate_right_rounded),
+            ))
+        : Positioned(
+            top: MediaQuery.of(context).size.height * 0.1,
+            right: 10,
+            child: hazardMode != null && nowManual != null
+                ? Container(
+                    padding: const EdgeInsets.all(10.0),
+                    width: 250,
+                    height: 80,
+                    decoration: ShapeDecoration(
+                      shape: Border.all(
+                        width: 2.0,
+                        color: Colors.red,
+                      ),
                     ),
-                  ),
-                  subtitle: const Text(
-                    '대피 요령 확인하기',
+                    child: SingleChildScrollView(
+                      child: ListTile(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(nowManual!.title),
+                                content: SizedBox(
+                                  width: 300,
+                                  height: 300,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: <Widget>[
+                                        Image.network(nowManual!.image),
+                                        Text(nowManual!.description),
+                                        Row(
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                nowManual = null;
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('팝업 닫기'),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        leading: Image.network(nowManual!.image),
+                        title: Text(
+                          nowManual!.title + '주의!!',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: const Text(
+                          '대피 요령 확인하기',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : const Text(
+                    '간단 사용법',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontSize: 15,
                     ),
                   ),
-                ),
-              ),
-            )
-          : const Text(
-              '간단 사용법',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-              ),
-            ),
-    );
+          );
   }
 
   // 위험도 막대
@@ -256,19 +321,19 @@ class _MainScreenState extends State<MainScreen> {
               _controller.complete(controller);
             },
             myLocationEnabled: false,
-      markers: {
-        if (_currentPosition != null)
-          Marker(
-            markerId: const MarkerId("current_position"),
-            position: LatLng(
-              _currentPosition!.latitude,
-              _currentPosition!.longitude,
-            ),
-            infoWindow: const InfoWindow(title: "현재 위치"),
-          ),
-        if (_showCustomMarkers) ..._buildCustomMarkers(),
-      },
-    )
+            markers: {
+              if (_currentPosition != null)
+                Marker(
+                  markerId: const MarkerId("current_position"),
+                  position: LatLng(
+                    _currentPosition!.latitude,
+                    _currentPosition!.longitude,
+                  ),
+                  infoWindow: const InfoWindow(title: "현재 위치"),
+                ),
+              if (_showCustomMarkers) ..._buildCustomMarkers(),
+            },
+          )
         : const Center(child: CircularProgressIndicator());
   }
 
@@ -286,7 +351,6 @@ class _MainScreenState extends State<MainScreen> {
             snippet: info.info,
           ),
           icon: BitmapDescriptor.defaultMarkerWithHue(240.0),
-
         ),
       );
     }
@@ -347,8 +411,9 @@ class _MainScreenState extends State<MainScreen> {
                   child: FloatingActionButton(
                     heroTag: 'but6',
                     onPressed: () {
-                      if(hazardMode != null){
-                        nowManual = findManual(ManualDumy().getManuals(), hazardMode!);
+                      if (hazardMode != null) {
+                        nowManual =
+                            findManual(ManualDumy().getManuals(), hazardMode!);
                       }
                       setState(() {});
                     },
@@ -447,6 +512,8 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+
+  // 메인 스크린 내장 함수들
   void _navigateToScreen(Widget screen) {
     Navigator.push(
       context,
@@ -464,6 +531,46 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ));
       });
+    }
+  }
+
+  void getWeatherData() async {
+    HttpHelper helper = HttpHelper();
+
+    try {
+      weatherResult = await helper.getWeather('daegu');
+      setState(() {
+        temperatureInKelvin = weatherResult['main']['temp'];
+        temperatureInCelsius = temperatureInKelvin - 273.15;
+        updateHazardRate();
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  void updateHazardRate() {
+    temperatureInCelsius = testTemperature;
+    if (temperatureInCelsius >= 35 && temperatureInCelsius < 45) {
+      hazardRate = (temperatureInCelsius - 35) / 10 * 100;
+      hazardMode = '폭염';
+      return;
+    }
+    if (temperatureInCelsius >= 45) {
+      hazardRate = 100;
+      hazardMode = '폭염';
+      return;
+    }
+
+    if (temperatureInCelsius <= -5 && temperatureInCelsius > -20) {
+      hazardRate = (-temperatureInCelsius - 5) / 15 * 100;
+      hazardMode = '한파';
+      return;
+    }
+    if (temperatureInCelsius <= -20) {
+      hazardMode = '한파';
+      hazardRate = 100;
+      return;
     }
   }
 }

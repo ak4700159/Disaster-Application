@@ -37,6 +37,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   String result = ' ';
   double temperatureInCelsius = 0.0;
   Map<String, dynamic> weatherResult = {};
+  bool _isReady = false;
 
   @override
   void initState() {
@@ -48,6 +49,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     Timer.periodic(updateInterval, (Timer t) => getWeatherData());
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -56,31 +58,47 @@ class _WeatherScreenState extends State<WeatherScreen> {
         onTap: () {
           _showWeatherDetails(weatherResult);
         },
-        child: Container(
-          padding: const EdgeInsets.all(10.0),
-          color: Colors.transparent,
-          child: Row(
-            children: [
-              SizedBox(
-                width: 20,
-              ),
-              const Icon(
-                Icons.sunny,
-                size: 40,
-              ),
-              Text(
-                '온도: ${temperatureInCelsius.toStringAsFixed(2)} °C',
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
+        child: !_isReady
+            ? const Center(
+                child: Icon(
+                  Icons.rotate_right_rounded,
+                  size: 40,
+                ),
+              )
+            : Container(
+                padding: const EdgeInsets.all(10.0),
+                color: Colors.transparent,
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    selectWeatherIcon(weatherResult['weather'][0]),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '온도: ${temperatureInCelsius.toStringAsFixed(2)} °C',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
       ),
     );
+  }
+
+  Widget selectWeatherIcon(var weather) {
+    if ('broken clouds' == weather['description']) return Icon(Icons.cloud);
+    if ('sunny' == weather['description']) return Icon(Icons.sunny);
+    return Icon(Icons.accessibility);
   }
 
   void getWeatherData() async {
@@ -89,10 +107,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
     try {
       // 자동적으로
       weatherResult = await helper.getWeather('daegu');
+      _isReady = true;
       setState(() {
         temperatureInKelvin = weatherResult['main']['temp'];
         temperatureInCelsius = temperatureInKelvin - 273.15;
-        temperatureInCelsius = -15;
+        temperatureInCelsius = testTemperature;
       });
     } catch (e) {
       print('Error: $e');
