@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'main.dart';
@@ -14,15 +16,25 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  String result = ' ';
   double temperatureInCelsius = 0; // 테스트 문구
-  late Map<String, dynamic> weatherResult;
 
   @override
-  void initState() {
-    weatherResult = widget.weatherResult;
-    super.initState();
+  void didUpdateWidget(covariant WeatherScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    //weatherResult = widget.weatherResult;
+    if (widget.weatherResult != oldWidget.weatherResult) {
+      updateTemperature();
+    }
+
   }
+
+  void updateTemperature() {
+    double temperatureInKelvin = widget.weatherResult['main']['temp'];
+    setState(() {
+      temperatureInCelsius = temperatureInKelvin - 273.15;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +42,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       top: 10,
       child: GestureDetector(
         onTap: () {
-          _showWeatherDetails(weatherResult);
+          _showWeatherDetails(widget.weatherResult);
         },
         child:Container(
                 padding: const EdgeInsets.all(10.0),
@@ -40,7 +52,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                    selectWeatherIcon(weatherResult['weather'][0]),
+                    selectWeatherIcon(widget.weatherResult['weather'][0]),
                     const SizedBox(
                       width: 10,
                     ),
@@ -74,7 +86,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
         double feelsLikeInKelvin = main['feels_like'];
         double temperatureInKelvin = weatherResult['main']['temp'];
         temperatureInCelsius = temperatureInKelvin - 273.15;
-        temperatureInCelsius = testTemperature; // 테스트 문구
+        //temperatureInCelsius = testTemperature; // 테스트 문구
 
         return AlertDialog(
           title: Text('지역: ${weatherResult['name']}'), // 지역

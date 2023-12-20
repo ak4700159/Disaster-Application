@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:test1/model/hazard_graph.dart';
 
-import '../main.dart';
+import 'main.dart';
 
 // 위험도 그래프를 나타내는 스크린 막대
 // 위험도 비율에 따라 유동적으로 변화
@@ -20,8 +22,11 @@ class _HazardScreenState extends State<HazardScreen> {
 
   @override
   void initState() {
-    weatherResult = widget.weatherResult;
     super.initState();
+
+    weatherResult = widget.weatherResult;
+    const Duration updateInterval = Duration(seconds: 2); //3초마다 업데이트
+    Timer.periodic(updateInterval, (Timer t) => weatherResult = widget.weatherResult);
   }
 
   @override
@@ -97,7 +102,7 @@ class _HazardScreenState extends State<HazardScreen> {
         double feelsLikeInKelvin = main['feels_like'];
         double temperatureInKelvin = weatherResult['main']['temp'];
         temperatureInCelsius = temperatureInKelvin - 273.15;
-        temperatureInCelsius = testTemperature; // 테스트 문구
+        //temperatureInCelsius = testTemperature; // 테스트 문구
 
         return AlertDialog(
           title: Text(

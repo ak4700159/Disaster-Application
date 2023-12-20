@@ -13,7 +13,7 @@ import 'package:test1/sub_screen/disaster_screen.dart';
 import 'package:test1/sub_screen/login_screen.dart';
 import 'package:test1/sub_screen/manual_screen.dart';
 import 'package:test1/sub_screen/setting_screen.dart';
-import 'package:test1/sub_screen/hazard_screen.dart';
+import 'package:test1/hazard_screen.dart';
 import 'WeatherScreen.dart';
 import 'model/manual_model.dart';
 import 'package:test1/dumy/custom_markers.dart';
@@ -56,11 +56,8 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     _checkLocationPermission();
     getWeatherData();
-
     _isManualReady = true;
     setState(() {});
-    const Duration updateInterval = Duration(seconds: 3); //3초마다 업데이트
-    Timer.periodic(updateInterval, (Timer t) => getWeatherData());
   }
 
   void _toggleCustomMarkers() {
@@ -82,6 +79,8 @@ class _MainScreenState extends State<MainScreen> {
         setState(() {
           _currentPosition = position;
           _isLocationReady = true;
+          const Duration updateInterval = Duration(seconds: 3); //3초마다 업데이트
+          Timer.periodic(updateInterval, (Timer t) => getWeatherData());
         });
       },
     );
@@ -449,6 +448,7 @@ class _MainScreenState extends State<MainScreen> {
                         nowManual =
                             findManual(ManualDumy().getManuals(), hazardMode!);
                       }
+                      updateHazardRate();
                       setState(() {});
                     },
                     backgroundColor: Colors.transparent,
@@ -582,8 +582,11 @@ class _MainScreenState extends State<MainScreen> {
         setState(() {
           temperatureInKelvin = weatherResult['main']['temp'];
           temperatureInCelsius = temperatureInKelvin - 273.15;
-          temperatureInCelsius = testTemperature; // 실험 데스트 문구
+          //temperatureInCelsius = testTemperature; // 실험 데스트 문구
+          hazardRate = 0;
+          hazardMode = null;
           updateHazardRate();
+          setState(() { });
           if (hazardMode != null) {
             nowManual = findManual(ManualDumy().getManuals(), hazardMode);
           }
@@ -616,8 +619,6 @@ class _MainScreenState extends State<MainScreen> {
       hazardRate = 100;
       return;
     }
-
-    hazardMode = null;
   }
 }
 
