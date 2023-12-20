@@ -54,17 +54,13 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState(){
     super.initState();
-    init();
+    _checkLocationPermission();
+    getWeatherData();
 
     _isManualReady = true;
     setState(() {});
-    const Duration updateInterval = Duration(seconds: 3); //1분마다 업데이트
+    const Duration updateInterval = Duration(seconds: 3); //3초마다 업데이트
     Timer.periodic(updateInterval, (Timer t) => getWeatherData());
-  }
-
-  Future init() async{
-    _checkLocationPermission();
-    getWeatherData();
   }
 
   void _toggleCustomMarkers() {

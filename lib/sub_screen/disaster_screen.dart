@@ -13,6 +13,7 @@ class DisasterScreen extends StatelessWidget {
           '피해 누적 현황',
         ),
       ),
+      body: Center(child: Text(''),),
     );
   }
 }
