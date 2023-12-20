@@ -48,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
   Manual? nowManual;
 
   // 화면 준비 여부
-  bool _isAllReady = false;
+  bool _isHttpReady = false;
 
 
   @override
@@ -56,10 +56,9 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     init();
 
-    _isAllReady = true;
     _isManualReady = true;
     setState(() {});
-    const Duration updateInterval = Duration(minutes: 1); //1분마다 업데이트
+    const Duration updateInterval = Duration(seconds: 3); //1분마다 업데이트
     Timer.periodic(updateInterval, (Timer t) => getWeatherData());
   }
 
@@ -112,10 +111,10 @@ class _MainScreenState extends State<MainScreen> {
             context: context,
             builder: (BuildContext buildContext) {
               return AlertDialog(
-                content: Container(
+                content: const SizedBox(
                   width: 100,
                   height: 30,
-                  child: const Center(
+                  child: Center(
                     child: Text(
                       '나가시겠습니까?',
                       style: TextStyle(
@@ -154,7 +153,7 @@ class _MainScreenState extends State<MainScreen> {
           );
           return Future(() => false);
         },
-        child: !_isAllReady
+        child: !_isLocationReady || !_isHttpReady
             ? const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -164,7 +163,7 @@ class _MainScreenState extends State<MainScreen> {
                       size: 50,
                     ),
                     Text(
-                      '로딩 중',
+                      '로딩중',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -581,6 +580,8 @@ class _MainScreenState extends State<MainScreen> {
         weatherResult = await helper.getWeather(
           '${_currentPosition!.latitude},${_currentPosition!.longitude}',
         );
+        _isHttpReady = true;
+
 
         setState(() {
           temperatureInKelvin = weatherResult['main']['temp'];
