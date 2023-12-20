@@ -171,6 +171,10 @@ class _MainScreenState extends State<MainScreen> {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.3,
               child: TextField(
+                decoration: const InputDecoration(
+                  hintText: '온도 테스트',
+                  hintStyle: TextStyle(fontSize: 10),
+                ),
                 controller: _testController,
               ),
             ),
@@ -185,8 +189,7 @@ class _MainScreenState extends State<MainScreen> {
                 child: const Text(
                   'Update',
                   style: TextStyle(
-                    fontSize: 10,
-                    decoration: TextDecoration.lineThrough,
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -251,10 +254,10 @@ class _MainScreenState extends State<MainScreen> {
                                           children: [
                                             TextButton(
                                               onPressed: () {
-                                                nowManual = null;
                                                 Navigator.pop(context);
+                                                nowManual = null;
                                               },
-                                              child: Text('팝업 닫기'),
+                                              child: Text('팝업 삭제'),
                                             ),
                                           ],
                                         ),
@@ -282,14 +285,21 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                   )
-                : const Text(
-                    '간단 사용법',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                : SizedBox(
+                    width: 150,
+                    height: 70,
+                    child: Column(
+                      children: [
+                        Image.network(
+                            'https://tse1.mm.bing.net/th?id=OIP.1fX9pb6ZCOXSE26sG5E5_gHaCg&pid=Api&P=0&h=220'),
+                        const Text(
+                          '광고 위치',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 10),
+                        ),
+                      ],
                     ),
-                  ),
-          );
+                  ));
   }
 
   // 위험도 막대
@@ -511,7 +521,6 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
-
 
   // 메인 스크린 내장 함수들
   void _navigateToScreen(Widget screen) {

@@ -51,7 +51,7 @@ class _HazardScreenState extends State<HazardScreen> {
   @override
   void initState() {
     getWeatherData();
-    const Duration updateInterval = Duration(minutes: 3); //3분마다 업데이트
+    const Duration updateInterval = Duration(seconds: 10); //10초마다 업데이트
     Timer.periodic(updateInterval, (Timer t) => getWeatherData());
     super.initState();
   }

@@ -4,8 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:test1/sub_screen/login_screen.dart';
 
-import 'WeatherScreen.dart';
-
 // 커뮤니티 들어갈 수 있는지 권환 확인
 bool communityPermission = false;
 // 어플의 주요 기능을 당담하는 위험도 비율

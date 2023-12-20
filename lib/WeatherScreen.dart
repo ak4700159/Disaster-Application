@@ -26,17 +26,19 @@ class HttpHelper {
 
 // 좌측 상단에 온도 표시 및 터치 시 상세 날씨 정보 확인 가능
 // 지도 위에 표시됨
-class WeatherScreen extends StatefulWidget {
-  const WeatherScreen({Key? key}) : super(key: key);
 
+
+class WeatherScreen extends StatefulWidget {
+  WeatherScreen({Key? key}) : super(key: key);
+  Map<String, dynamic> weatherResult = {};
   @override
   _WeatherScreenState createState() => _WeatherScreenState();
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  Map<String, dynamic> weatherResult = {};
   String result = ' ';
   double temperatureInCelsius = 0.0;
-  Map<String, dynamic> weatherResult = {};
   bool _isReady = false;
 
   @override
@@ -48,7 +50,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
     const Duration updateInterval = Duration(minutes: 3); //3분마다 업데이트
     Timer.periodic(updateInterval, (Timer t) => getWeatherData());
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         fontSize: 15,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                   ],
