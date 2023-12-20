@@ -56,8 +56,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     _checkLocationPermission();
     getWeatherData();
-    _isManualReady = true;
-    setState(() {});
+    setState(() {_isManualReady = true;});
   }
 
   void _toggleCustomMarkers() {
@@ -586,7 +585,6 @@ class _MainScreenState extends State<MainScreen> {
           hazardRate = 0;
           hazardMode = null;
           updateHazardRate();
-          setState(() { });
           if (hazardMode != null) {
             nowManual = findManual(ManualDumy().getManuals(), hazardMode);
           }

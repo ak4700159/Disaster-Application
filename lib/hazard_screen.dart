@@ -17,17 +17,7 @@ class HazardScreen extends StatefulWidget {
 }
 
 class _HazardScreenState extends State<HazardScreen> {
-  double temperatureInCelsius = testTemperature; // 테스트 문구
-  late Map<String, dynamic> weatherResult;
-
-  @override
-  void initState() {
-    super.initState();
-
-    weatherResult = widget.weatherResult;
-    const Duration updateInterval = Duration(seconds: 2); //3초마다 업데이트
-    Timer.periodic(updateInterval, (Timer t) => weatherResult = widget.weatherResult);
-  }
+  double temperatureInCelsius = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +28,7 @@ class _HazardScreenState extends State<HazardScreen> {
         children: [
           TextButton(
             onPressed: () {
-              _showWeatherDetails(weatherResult);
+              _showWeatherDetails(widget.weatherResult);
             },
             child: Container(
               width: 40,
