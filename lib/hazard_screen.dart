@@ -97,7 +97,6 @@ class _HazardScreenState extends State<HazardScreen> {
       context: context,
       builder: (BuildContext context) {
         var main = weatherResult['main'];
-        var weather = weatherResult['weather'][0];
 
         double feelsLikeInKelvin = main['feels_like'];
         double temperatureInKelvin = weatherResult['main']['temp'];
