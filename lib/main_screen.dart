@@ -50,18 +50,22 @@ class _MainScreenState extends State<MainScreen> {
   // 화면 준비 여부
   bool _isAllReady = false;
 
+
   @override
-  void initState() {
+  void initState(){
     super.initState();
+    init();
+
+    _isAllReady = true;
+    _isManualReady = true;
+    setState(() {});
+    const Duration updateInterval = Duration(minutes: 1); //1분마다 업데이트
+    Timer.periodic(updateInterval, (Timer t) => getWeatherData());
+  }
+
+  Future init() async{
     _checkLocationPermission();
     getWeatherData();
-    Future.delayed(const Duration(seconds: 2), () {
-      _isAllReady = true;
-      _isManualReady = true;
-    });
-    setState(() {});
-    const Duration updateInterval = Duration(seconds: 10); //10초마다 업데이트
-    Timer.periodic(updateInterval, (Timer t) => getWeatherData());
   }
 
   void _toggleCustomMarkers() {
@@ -572,16 +576,22 @@ class _MainScreenState extends State<MainScreen> {
     HttpHelper helper = HttpHelper();
 
     try {
-      weatherResult = await helper.getWeather('daegu');
-      setState(() {
-        temperatureInKelvin = weatherResult['main']['temp'];
-        temperatureInCelsius = temperatureInKelvin - 273.15;
-        temperatureInCelsius = testTemperature; // 실험 데스트 문구
-        updateHazardRate();
-        if( hazardMode != null) {
-          nowManual = findManual(ManualDumy().getManuals(), hazardMode);
-        }
-      });
+      // 현재 위치가 사용 가능한지 확인합니다.
+      if (_currentPosition != null) {
+        weatherResult = await helper.getWeather(
+          '${_currentPosition!.latitude},${_currentPosition!.longitude}',
+        );
+
+        setState(() {
+          temperatureInKelvin = weatherResult['main']['temp'];
+          temperatureInCelsius = temperatureInKelvin - 273.15;
+          temperatureInCelsius = testTemperature; // 실험 데스트 문구
+          updateHazardRate();
+          if (hazardMode != null) {
+            nowManual = findManual(ManualDumy().getManuals(), hazardMode);
+          }
+        });
+      }
     } catch (e) {
       print('Error: $e');
     }
@@ -620,8 +630,8 @@ class HttpHelper {
   final String path = 'data/2.5/weather';
   final String apiKey = 'ca47ef2434b9b55eb7b7706137a15f1f';
 
-  Future<Map<String, dynamic>> getWeather(String location) async {
-    Map<String, dynamic> parameters = {'q': location, 'appid': apiKey};
+  Future<Map<String, dynamic>> getWeather(String coordinates) async {
+    Map<String, dynamic> parameters = {'lat': coordinates.split(',')[0], 'lon': coordinates.split(',')[1], 'appid': apiKey};
     Uri uri = Uri.https(domain, path, parameters);
     http.Response response = await http.get(uri);
 
