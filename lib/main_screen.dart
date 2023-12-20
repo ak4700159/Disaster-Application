@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 import 'package:test1/dumy/manual_dumy.dart';
 import 'package:test1/main.dart';
 import 'package:test1/sub_screen/community_screen.dart';
@@ -26,16 +28,27 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final TextEditingController _testController = TextEditingController();
+
   final Completer<GoogleMapController> _controller = Completer();
   LocationPermission? _locationPermission;
   StreamSubscription<Position>? _positionStreamSubscription;
+
+  // 날씨 정보
   double temperatureInCelsius = 0;
-  late Map<String, dynamic> weatherResult;
+  double temperatureInKelvin = 0;
+  late Map<String, dynamic> weatherResult; // 백엔드에서 가져온 데이터
+
+  // 위치 정보 상태
   Position? _currentPosition;
   bool _isLocationReady = false;
   bool _showCustomMarkers = true;
+
+  // 메뉴얼 상태
   bool _isManualReady = false;
   Manual? nowManual;
+
+  // 화면 준비 여부
+  bool _isAllReady = false;
 
   @override
   void initState() {
@@ -43,11 +56,11 @@ class _MainScreenState extends State<MainScreen> {
     _checkLocationPermission();
     getWeatherData();
     Future.delayed(const Duration(seconds: 2), () {
+      _isAllReady = true;
       _isManualReady = true;
-      nowManual = findManual(ManualDumy().getManuals(), hazardMode!);
-      setState(() {});
     });
-    const Duration updateInterval = Duration(minutes: 3); //3분마다 업데이트
+    setState(() {});
+    const Duration updateInterval = Duration(seconds: 10); //10초마다 업데이트
     Timer.periodic(updateInterval, (Timer t) => getWeatherData());
   }
 
@@ -137,26 +150,50 @@ class _MainScreenState extends State<MainScreen> {
           );
           return Future(() => false);
         },
-        child: Column(
-          children: [
-            Container(
-              height: statusBarHeight,
-              color: Colors.transparent,
-            ),
-            Expanded(
-              child: Stack(
+        child: !_isAllReady
+            ? const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.refresh_outlined,
+                      size: 50,
+                    ),
+                    Text(
+                      '로딩 중',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Column(
                 children: [
-                  _buildGoogleMap(),
-                  _buildHazardStick(),
-                  _buildLocationButtons(),
-                  WeatherScreen(), // WeatherScreen을 맨 위로 이동
-                  _buildManualScreen(),
-                  _buildTestBox(),
+                  Container(
+                    height: statusBarHeight,
+                    color: Colors.transparent,
+                  ),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        _buildGoogleMap(),
+                        HazardScreen(
+                          weatherResult: weatherResult,
+                        ),
+                        _buildLocationButtons(),
+                        WeatherScreen(
+                          weatherResult: weatherResult,
+                        ),
+                        // WeatherScreen을 맨 위로 이동
+                        _buildManualScreen(),
+                        _buildTestBox(),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -183,8 +220,8 @@ class _MainScreenState extends State<MainScreen> {
               child: OutlinedButton(
                 onPressed: () {
                   testTemperature = double.parse(_testController.text);
-                  didUpdateWidget(const MainScreen());
                   _testController.text = '';
+                  setState(() { });
                 },
                 child: const Text(
                   'Update',
@@ -255,7 +292,7 @@ class _MainScreenState extends State<MainScreen> {
                                             TextButton(
                                               onPressed: () {
                                                 Navigator.pop(context);
-                                                nowManual = null;
+                                                hazardMode = null;
                                               },
                                               child: Text('팝업 삭제'),
                                             ),
@@ -303,18 +340,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   // 위험도 막대
-  Widget _buildHazardStick() {
-    return Positioned(
-      top: MediaQuery.of(context).size.height * 0.1,
-      left: 10,
-      child: Column(
-        children: [
-          HazardScreen(),
-        ],
-      ),
-    );
-  }
-
   // 구글맵 - 대피소 포함
   Widget _buildGoogleMap() {
     return _isLocationReady
@@ -551,7 +576,11 @@ class _MainScreenState extends State<MainScreen> {
       setState(() {
         temperatureInKelvin = weatherResult['main']['temp'];
         temperatureInCelsius = temperatureInKelvin - 273.15;
+        temperatureInCelsius = testTemperature; // 실험 데스트 문구
         updateHazardRate();
+        if( hazardMode != null) {
+          nowManual = findManual(ManualDumy().getManuals(), hazardMode);
+        }
       });
     } catch (e) {
       print('Error: $e');
@@ -559,7 +588,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void updateHazardRate() {
-    temperatureInCelsius = testTemperature;
     if (temperatureInCelsius >= 35 && temperatureInCelsius < 45) {
       hazardRate = (temperatureInCelsius - 35) / 10 * 100;
       hazardMode = '폭염';
@@ -580,6 +608,28 @@ class _MainScreenState extends State<MainScreen> {
       hazardMode = '한파';
       hazardRate = 100;
       return;
+    }
+
+    hazardMode = null;
+  }
+}
+
+// 기상 api 가져오기
+class HttpHelper {
+  final String domain = 'api.openweathermap.org';
+  final String path = 'data/2.5/weather';
+  final String apiKey = 'ca47ef2434b9b55eb7b7706137a15f1f';
+
+  Future<Map<String, dynamic>> getWeather(String location) async {
+    Map<String, dynamic> parameters = {'q': location, 'appid': apiKey};
+    Uri uri = Uri.https(domain, path, parameters);
+    http.Response response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> result = json.decode(response.body);
+      return result;
+    } else {
+      throw Exception('Failed to load weather data');
     }
   }
 }

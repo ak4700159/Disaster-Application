@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:test1/WeatherScreen.dart';
 import 'package:test1/model/hazard_graph.dart';
 
 import '../main.dart';
@@ -9,72 +6,64 @@ import '../main.dart';
 // 위험도 그래프를 나타내는 스크린 막대
 // 위험도 비율에 따라 유동적으로 변화
 class HazardScreen extends StatefulWidget {
-  HazardScreen({super.key});
+  HazardScreen({super.key, required this.weatherResult});
+
+  Map<String, dynamic> weatherResult;
 
   @override
   State<HazardScreen> createState() => _HazardScreenState();
 }
 
 class _HazardScreenState extends State<HazardScreen> {
-  double temperatureInCelsius = 0;
+  double temperatureInCelsius = testTemperature; // 테스트 문구
   late Map<String, dynamic> weatherResult;
 
   @override
+  void initState() {
+    weatherResult = widget.weatherResult;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        _showWeatherDetails(weatherResult);
-      },
-      child: Container(
-        width: 40,
-        height: 150,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomPaint(
-              size: const Size(5, 100),
-              foregroundPainter: HazardGraph(hazardRate: hazardRate),
-            ),
-            const Text(
-              '위험도',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+    return Positioned(
+      top: MediaQuery.of(context).size.height * 0.1,
+      left: 10,
+      child: Column(
+        children: [
+          TextButton(
+            onPressed: () {
+              _showWeatherDetails(weatherResult);
+            },
+            child: Container(
+              width: 40,
+              height: 150,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomPaint(
+                    size: const Size(5, 100),
+                    foregroundPainter: HazardGraph(hazardRate: hazardRate),
+                  ),
+                  const Text(
+                    '위험도',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  @override
-  void initState() {
-    getWeatherData();
-    const Duration updateInterval = Duration(seconds: 10); //10초마다 업데이트
-    Timer.periodic(updateInterval, (Timer t) => getWeatherData());
-    super.initState();
-  }
-
-  // 날씨 정보를 얻어오면서 위험도 비율도 업데이트
-  void getWeatherData() async {
-    HttpHelper helper = HttpHelper();
-
-    try {
-      weatherResult = await helper.getWeather('daegu');
-      setState(() {
-        temperatureInKelvin = weatherResult['main']['temp'];
-        temperatureInCelsius = temperatureInKelvin - 273.15;
-        updateHazardRate();
-      });
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
-  //
+  // 위험도 비율 산출
   void updateHazardRate() {
-    temperatureInCelsius = testTemperature;
+    temperatureInCelsius = testTemperature; // 테스트 문구
     if (temperatureInCelsius >= 35 && temperatureInCelsius < 45) {
       hazardRate = (temperatureInCelsius - 35) / 10 * 100;
       hazardMode = '폭염';
@@ -106,20 +95,36 @@ class _HazardScreenState extends State<HazardScreen> {
         var weather = weatherResult['weather'][0];
 
         double feelsLikeInKelvin = main['feels_like'];
+        double temperatureInKelvin = weatherResult['main']['temp'];
+        temperatureInCelsius = temperatureInKelvin - 273.15;
+        temperatureInCelsius = testTemperature; // 테스트 문구
 
         return AlertDialog(
-          title: Text('지역: ${weatherResult['name']}'), // 지역
+          title: Text(
+            '지역: ${weatherResult['name']}',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+            ),
+          ),
+          // 지역
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('온도: ${temperatureInCelsius.toStringAsFixed(2)} °C'),
+                selectWeatherIcon(weatherResult['weather'][0]),
+                Text(
+                  '온도: ${temperatureInCelsius.toStringAsFixed(2)} °C',
+                  style: const TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 Text(
                     '체감온도: ${(feelsLikeInKelvin - 273.15).toStringAsFixed(2)} °C'), // 체감온도 추가
-                Text('날씨: ${weather['description']}'),
                 Text(
                   '현재 위험도: ${hazardRate}%',
-                  style: hazardRate > 50
+                  style: hazardRate >= 50
                       ? const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.red,
@@ -134,7 +139,7 @@ class _HazardScreenState extends State<HazardScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('확인'),
+              child: const Text('확인'),
             ),
           ],
         );
