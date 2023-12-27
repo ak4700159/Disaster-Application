@@ -624,7 +624,7 @@ class _MainScreenState extends State<MainScreen> {
 class HttpHelper {
   final String domain = 'api.openweathermap.org';
   final String path = 'data/2.5/weather';
-  final String apiKey = 'ca47ef2434b9b55eb7b7706137a15f1f';
+  final String apiKey = '본인의 api키 등록';
 
   Future<Map<String, dynamic>> getWeather(String coordinates) async {
     Map<String, dynamic> parameters = {'lat': coordinates.split(',')[0], 'lon': coordinates.split(',')[1], 'appid': apiKey};
